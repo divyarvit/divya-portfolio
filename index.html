@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Divya.R | Software Engineer</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+    }
+    /* ===== About Me Micro Interaction ===== */
+    #about span {
+        transition: all 0.3s ease;
+    }
+    #about span:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(99,102,241,0.35);
+    }
+    /* ===== Scroll Reveal Animation ===== */
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    #hero-text {
+        transition: opacity 0.4s ease;
+    }
+
+    /* ===== Skill Card Progress ===== */
+    .skill-card {
+        position: relative;
+        overflow: hidden;
+    }
+    .skill-level {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        background: linear-gradient(to right, #6366f1, #22d3ee);
+        width: 0%;
+        transition: width 0.5s ease;
+    }
+    .skill-card:hover .skill-level {
+        width: 100%;
+    }
+
+    /* ===== Skill Card Premium Hover ===== */
+    .skill-card {
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .skill-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(99,102,241,0.15);
+    }
+
+    /* soft glow border */
+    .skill-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        padding: 1px;
+        background: linear-gradient(120deg, transparent, rgba(99,102,241,0.6), transparent);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }   
+    .skill-card:hover::before {
+        opacity: 1;
+    }
+    .skill-card {
+        position: relative;
+        overflow: hidden;
+    }
+    .skill-card::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 60%);
+        top: var(--y);
+        left: var(--x);
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }   
+    .skill-card:hover::after {
+        opacity: 1;
+    }
+    .skill-card:hover {
+        box-shadow: 0 0 35px rgba(99,102,241,0.15);
+    }
+    .skill-card span {
+        transition: all 0.3s ease;
+        cursor: default;
+    }
+    .skill-card span:hover {
+        background: rgba(99, 102, 241, 0.2);
+        color: #c7d2fe;
+        box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
+        transform: translateY(-2px);
+    }
+    /* ===== Project Card Hover Glow ===== */
+    .project-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .project-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(99,102,241,0.2);
+    }
+    .project-card::after {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 60%);
+        top: var(--y);
+        left: var(--x);
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    .project-card:hover::after {
+        opacity: 1;
+    }
+    /* ===== Gradient Animated Name ===== */
+    .gradient-text {
+        background: linear-gradient(90deg, #6366f1, #22d3ee, #a78bfa);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 6s ease infinite;
+    }
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    /* Hero Glow Effect */
+    .hero-glow {
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 60%);
+        filter: blur(80px);
+        z-index: -1;
+    }
+    /* CTA Button Animation */
+    .cta-btn {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(99,102,241,0.35);
+    }
+    .nav-link.active {
+        color: #a5b4fc;
+        border-bottom: 2px solid #6366f1;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= LIVE PARTICLE BACKGROUND ================= -->
+  <canvas id="bg"></canvas>
+
+  <!-- ================= HERO ================= -->
+  <section class="min-h-screen flex items-center justify-center px-6 pt-24 reveal relative">
+    <div class="hero-glow"></div>
+    <div class="max-w-4xl text-center">
+
+      <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight">
+        Hi, I’m <span class="gesture-text">Divya.R</span>
+      </h1>
+
+      <p class="mt-4 text-xl font-medium text-indigo-200 tracking-wide">
+        <span id="hero-text">Software Engineer Student | AI & ML | Data Analysis</span>
+      </p>
+
+      <p class="mt-6 text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
+        Software Engineering student with hands-on experience in data analysis
+        and AI/ML, focused on building reliable, scalable, and data-driven
+        solutions through strong problem-solving and clean code.
+      </p>
+
+      <div class="mt-10 flex justify-center gap-5 flex-wrap">
+        <a href="assets/resume.pdf"
+            class="cta-btn px-8 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition font-medium">
+            View Resume
+        </a>
+
+        <a href="#skills"
+            class="cta-btn px-8 py-3 rounded-xl border border-indigo-400 hover:bg-indigo-400/10 transition font-medium">
+            View Skills
+        </a>
+      </div>
+
+    </div>
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-indigo-300 animate-bounce">
+        <span class="text-xs mb-1">Scroll</span>
+        <span class="text-xl">⬇️</span>
+    </div>
+    <!-- Hero Stats -->
+    <div class="mt-10 grid grid-cols-3 gap-6 max-w-md mx-auto text-center">
+        <div class="glass rounded-xl py-4">
+            <p class="text-2xl font-bold text-indigo-300">5+</p>
+            <p class="text-xs text-gray-400 mt-1">Projects</p>
+        </div>
+        <div class="glass rounded-xl py-4">
+            <p class="text-2xl font-bold text-indigo-300">4</p>
+            <p class="text-xs text-gray-400 mt-1">Certifications</p>
+        </div>
+        <div class="glass rounded-xl py-4">
+            <p class="text-2xl font-bold text-indigo-300">8.31</p>
+            <p class="text-xs text-gray-400 mt-1">CGPA</p>
+        </div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id = "about" class="py-24 px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+
+        <div class="glass rounded-3xl p-10 md:p-14
+                    grid md:grid-cols-5 gap-10
+                    hover:shadow-[0_0_60px_rgba(99,102,241,0.15)]
+                    transition duration-500">
+
+            <!-- LEFT: Identity -->
+            <div class="md:col-span-2 space-y-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-indigo-300">
+                    About Me
+                </h2>
+
+                <div class="w-16 h-1 bg-indigo-500 rounded"></div>
+
+                <p class="text-gray-300 text-lg leading-relaxed">
+                    Final-year <span class="text-indigo-300 font-medium">Software Engineering</span> student
+                    with a strong interest in
+                    <span class="text-indigo-300 font-medium">Data Analysis</span> and
+                    <span class="text-indigo-300 font-medium">AI & Machine Learning</span>.
+                </p>
+
+                <!-- Identity pills -->
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <span class="px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">
+                        🔍 Problem Solver
+                    </span>
+                    <span class="px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">
+                        📊 Data-Driven Thinker
+                    </span>
+                    <span class="px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">
+                        ⚙️ Clean Code Focused
+                    </span>
+                </div>
+            </div>
+
+            <!-- RIGHT: Story -->
+            <div class="md:col-span-3 relative pl-6 space-y-6 text-gray-300 leading-relaxed">
+
+            <!-- Accent line -->
+            <span class="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-indigo-400 to-indigo-600 rounded-full"></span>
+
+            <p>
+                I’m a final-year <span class="text-indigo-300 font-medium">Software Engineering</span> student with strong
+                foundations in <span class="text-indigo-300">data structures</span>,
+                <span class="text-indigo-300">object-oriented programming</span>, and
+                <span class="text-indigo-300">system-level thinking</span>, along with a growing
+                interest in <span class="text-indigo-300">data analysis</span> and
+                <span class="text-indigo-300">AI & machine learning</span>.
+            </p>
+
+            <p>
+                Through academic projects and hands-on implementations, I’ve gained practical
+                experience across the <span class="text-indigo-300">software development lifecycle</span>,
+                backend logic, machine learning techniques, and
+                <span class="text-indigo-300">data-driven decision making</span>.
+                I’m continuously learning and strengthening my core software engineering skills
+                to grow as a well-rounded engineer.
+            </p>
+
+            <p>
+                I enjoy solving structured problems, working with real-world datasets, and
+                designing <span class="text-indigo-300 font-medium">reliable, scalable software
+                systems</span> that follow clean coding practices and sound engineering principles.
+            </p>
+
+            <!-- Identity line -->
+            <p class="text-sm text-indigo-400 pt-2">
+                💡 Curious learner · Clean code advocate · Systems-first thinker
+            </p>
+        </div>
+        </div>
+    </div>
+  </section>
+
+
+  <!-- ================= EDUCATION ================= -->
+  <section id = "education" class="py-20 px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+
+        <h2 class="text-3xl font-bold text-center text-indigo-300 mb-12">
+            Education
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8">
+
+        <!-- College -->
+        <div class="glass rounded-2xl p-6 text-center hover:-translate-y-2 transition">
+            <div class="text-3xl mb-3">🎓</div>
+
+            <h3 class="font-semibold text-indigo-200">
+                B.Tech – M.Tech (Integrated)
+            </h3>
+
+            <p class="text-gray-400 text-sm mt-2">
+                Software Engineering
+            </p>
+
+            <p class="text-gray-400 text-sm mt-1">
+                VIT, Vellore
+            </p>
+
+            <p class="text-gray-500 text-xs mt-2">
+                2021 – 2026
+            </p>
+            <p class="text-gray-400 text-sm mt-2">
+                CGPA : 8.31/10
+            </p>
+        </div>
+
+        <!-- Class 12 -->
+        <div class="glass rounded-2xl p-6 text-center hover:-translate-y-2 transition">
+            <div class="text-3xl mb-3">🏫</div>
+
+            <h3 class="font-semibold text-indigo-200">
+                Higher Secondary (Class XII)
+            </h3>
+
+            <p class="text-gray-400 text-sm mt-2">
+                Science Stream
+            </p>
+
+            <p class="text-gray-400 text-sm mt-1">
+                State Board / CBSE
+            </p>
+
+            <p class="text-gray-500 text-xs mt-2">
+                Year of Completion
+            </p>
+            <p class="text-gray-400 text-sm mt-2">
+                Percentage : 93%
+            </p>
+        </div>
+
+        <!-- Class 10 -->
+        <div class="glass rounded-2xl p-6 text-center hover:-translate-y-2 transition">
+            <div class="text-3xl mb-3">📘</div>
+
+            <h3 class="font-semibold text-indigo-200">
+                Secondary School (Class X)
+            </h3>
+
+            <p class="text-gray-400 text-sm mt-2">
+                General Studies
+            </p>
+
+            <p class="text-gray-400 text-sm mt-1">
+                State Board / CBSE
+            </p>
+
+            <p class="text-gray-500 text-xs mt-2">
+                Year of Completion
+            </p>
+            <p class="text-gray-400 text-sm mt-2">
+                Percentage: 100%
+            </p>
+        </div>
+
+        </div>
+    </div>
+  </section>
+
+  <!-- ================= SKILLS ================= -->
+  <section id="skills" class="py-24 px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-indigo-300 mb-14">
+            Skills
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            <!-- Programming -->
+            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
+                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
+                    Programming
+                </h3>
+                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Java</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">C++</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Python</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">SQL</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">HTML & CSS</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">React.js</span>
+                </div>
+                <div class="skill-level"></div>
+            </div>
+            
+            <!-- AI / ML & Data -->
+                <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
+                    <h3 class="text-lg font-semibold text-indigo-200 mb-4">
+                        AI / ML & Data
+                    </h3>
+                    <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Machine Learning</span>
+                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Data Analysis</span>
+                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Data Visualization</span>
+                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Data Mining</span>
+                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">NLP Basics</span>
+                    </div>
+                    <div class="skill-level"></div>
+                </div>
+
+            <!-- Core Software Engineering -->
+            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
+                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
+                    Core CS Foundations
+                </h3>
+                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">DSA</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">OOP</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">DBMS</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Operating Systems</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Networking</span>
+                </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
+                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
+                    Software Engineering Practices
+                </h3>
+                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">SDLC</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Software Development Models</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Software Design</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Testing</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Security</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Cloud Computing</span>
+                </div>
+            </div>
+            <!-- Tools -->
+            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card 
+                        lg:col-span-2 lg:col-start-2">
+
+                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
+                    Tools & Platforms
+                </h3>
+                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Git & GitHub</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">VS CODE</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Jupyter Noteboob</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Power BI</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Tableau</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Figma</span>
+                     <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Microsoft Office</span>
+                </div>
+
+                <div class="skill-level"></div>
+            </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= CURRENTLY LEARNING ================= -->
+  <section id = "current learning" class="py-20 px-6 reveal">
+    <div class="max-w-5xl mx-auto">
+
+        <div class="glass rounded-3xl p-10 text-center">
+        <h2 class="text-3xl font-bold text-indigo-300 mb-4">
+            Currently Learning
+        </h2>
+
+        <p class="text-gray-400 mb-8">
+            Actively improving my skills by learning and practicing the following areas.
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-4">
+
+            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
+            🧩 System Design Basics
+            </div>
+
+            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
+            🤖 Applied Machine Learning
+            </div>
+
+            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
+            📊 Data Analysis Projects  & Visualization
+            </div>
+
+            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
+            ☁️ Cloud &  Devops Deployment Basics
+            </div>
+
+        </div>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- ================= Projects ================= -->
+  <section id = "projects" class="py-24 px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-indigo-300 mb-14">
+            Projects
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+
+            <!-- Project 1 -->
+            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
+                <span class="inline-block mb-2 px-3 py-1 text-xs rounded-full
+                            bg-indigo-500/10 text-indigo-300">
+                    ⭐ Featured Project
+                </span>
+                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
+                    Sign Language Detection using AI
+                </h3>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Problem:</span>
+                    Communication gap for hearing-impaired individuals.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Solution:</span>
+                    Built a real-time hand gesture recognition system using ML and computer vision.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-4">
+                    <span class="text-indigo-300">Outcome:</span>
+                    Enabled accurate gesture-based communication to improve accessibility.
+                </p>
+
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Python</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Machine Learning</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Computer Vision</span>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
+                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
+                    Breast Cancer Prediction using ML
+                </h3>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Problem:</span>
+                    Need for early and accurate breast cancer detection.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Solution:</span>
+                    Developed an ML-based classification model using medical dataset features.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-4">
+                    <span class="text-indigo-300">Outcome:</span>
+                    Achieved reliable predictions while reducing false negatives.
+                </p>
+
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Python</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">ML Algorithms</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Data Analysis</span>
+                </div>
+            </div>
+            <!-- Project 3 -->
+            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
+                <span class="inline-block mb-2 px-3 py-1 text-xs rounded-full
+                            bg-indigo-500/10 text-indigo-300">
+                    ⭐ Featured Project
+                </span>
+                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
+                    Sentiment Analysis on Product Reviews
+                </h3>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Problem:</span>
+                    Difficulty in understanding customer opinions from large review datasets.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Solution:</span>
+                    Applied NLP techniques to classify product reviews by sentiment.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-4">
+                    <span class="text-indigo-300">Outcome:</span>
+                    Extracted meaningful sentiment trends to analyze customer feedback.
+                </p>
+
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Python</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">NLP</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Data Processing</span>
+                </div>
+            </div>
+            <!-- Project 4 -->
+            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
+                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
+                    Hostel Help Line Management System
+                </h3>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Problem:</span>
+                    Inefficient handling and tracking of hostel-related complaints.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-1">
+                    <span class="text-indigo-300">Solution:</span>
+                    Developed a web-based complaint management system following SDLC practices.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-4">
+                    <span class="text-indigo-300">Outcome:</span>
+                    Improved complaint resolution efficiency and response time.
+                </p>
+
+                <div class="flex flex-wrap gap-2 text-sm">
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">HTML & CSS</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Backend Logic</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">SDLC</span>
+                </div>
+            </div>
+
+            <!-- Project 5 -->
+           <div class="glass rounded-2xl p-6 transition hover:-translate-y-2 md:col-span-2">
+                <span class="inline-block mb-2 px-3 py-1 text-xs rounded-full
+                            bg-indigo-500/10 text-indigo-300">
+                    ⭐ Featured Project
+                </span>
+                <h3 class="text-xl font-semibold text-indigo-200 mb-3 text-center">
+                    Smart Dustbin using IoT
+                </h3>
+
+                <p class="text-sm text-gray-400 mb-1 text-center">
+                    <span class="text-indigo-300">Problem:</span>
+                    Manual waste monitoring leading to inefficient collection.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-1 text-center">
+                    <span class="text-indigo-300">Solution:</span>
+                    Designed an IoT-based smart dustbin using sensors and microcontrollers.
+                </p>
+
+                <p class="text-sm text-gray-400 mb-4 text-center">
+                    <span class="text-indigo-300">Outcome:</span>
+                    Enabled optimized waste collection through real-time monitoring.
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-2 text-sm">
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">IoT</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Sensors</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Embedded Systems</span>
+                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Cloud Integration</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+  </section>
+  
+  <!-- Certifications -->
+  <section id="certifications" class="py-24 px-6 reveal">
+    <div class="max-w-5xl mx-auto">
+
+         <h2 class="text-3xl md:text-4xl font-bold text-center text-indigo-300 mb-14">
+            Certifications
+        </h2>
+
+        <div class="glass rounded-3xl p-10 md:p-12">
+
+            <ul class="space-y-6 text-gray-300">
+                <!-- Azure -->
+                <li>
+                    <a href="assets/certificates/azure-ai-certificate.pdf"
+                        target="_blank"
+                        class="text-indigo-300 hover:underline font-medium">
+                        Microsoft Azure AI Fundamentals (AI-900)
+                    </a>
+                    <p class="text-sm text-gray-400 mt-1">
+                        Fundamentals of AI workloads, machine learning concepts, and Azure AI services.
+                    </p>
+                </li>
+                
+                <!-- Infosys -->
+                <li>
+                    <a href="assets/certificates/infosys-certificate.pdf"
+                        target="_blank"
+                        class="text-indigo-300 hover:underline font-medium">
+                        Exploratory Data Analysis – Infosys
+                    </a>
+                    <p class="text-sm text-gray-400 mt-1">
+                        Practical experience in data cleaning, visualization, and insight generation.
+                    </p>
+                </li>
+
+                <!--Deloitte-->
+                <li>
+                    <a href="assets/certificates/deloitte-data-analytics.pdf"
+                        target="_blank"
+                        class="text-indigo-300 hover:underline font-medium">
+                        Data Analytics Job Simulation – Deloitte
+                    </a>
+                    <p class="text-sm text-gray-400 mt-1">
+                        Solved real-world business problems using data-driven analysis techniques.
+                    </p>
+                </li>
+
+                <!--Java-->
+                <li>
+                    <a href="assets/certificates/java-certificate.pdf"
+                        target="_blank"
+                        class="text-indigo-300 hover:underline font-medium">
+                        Java Programming Certification
+                    </a>
+                    <p class="text-sm text-gray-400 mt-1">
+                        Strengthened Java fundamentals including OOP, exception handling, and logic building.
+                    </p>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+  </section>
+            
+  <!-- ================= Contact ================= -->
+  <section id = "contact" class="py-24 px-6 reveal">
+    <div class="max-w-4xl mx-auto text-center">
+
+        <h2 class="text-3xl md:text-4xl font-bold text-indigo-300 mb-4">
+            Get In Touch
+        </h2>
+
+        <p class="text-gray-400 mb-10 max-w-2xl mx-auto">
+            I’m actively seeking opportunities in software engineering, data analysis,
+            and AI/ML. Feel free to reach out for internships, full-time roles, or collaborations.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-6">
+            <!-- Email -->
+            <a href="mailto:rdivyavit2003@gmail.com"
+                class="glass px-6 py-4 rounded-xl flex items-center gap-3 justify-center
+                        text-indigo-200 hover:bg-indigo-400/20 transition">
+                <span class="text-xl">📧</span>
+                <span>Email</span>
+            </a>
+
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/r-divya-8a9a03357/"
+                target="_blank"
+                class="glass px-6 py-4 rounded-xl flex items-center gap-3 justify-center
+                        text-indigo-200 hover:bg-indigo-400/20 transition">
+                <span class="text-xl">💼</span>
+                <span>LinkedIn</span>
+            </a>
+
+            <!-- GitHub -->
+            <a href="https://github.com/divyarvit"
+                target="_blank"
+                class="glass px-6 py-4 rounded-xl flex items-center gap-3 justify-center
+                        text-indigo-200 hover:bg-indigo-400/20 transition">
+                <span class="text-xl">🧑‍💻</span>
+                <span>GitHub</span>
+            </a>
+        </div>
+    </div>
+  </section>
+  <!-- ================= PARTICLE BACKGROUND SCRIPT ================= -->
+  <script>
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
+    let w, h;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: Math.random() * 0.5 - 0.25,
+      vy: Math.random() * 0.5 - 0.25
+    }));
+
+    function animate() {
+      ctx.clearRect(0, 0, w, h);
+
+      for (let p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = "#818cf8";
+        ctx.fill();
+      }
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 120) {
+            ctx.strokeStyle = `rgba(129,140,248,${1 - dist / 120})`;
+            ctx.lineWidth = 0.4;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="py-8 text-center text-sm text-gray-500">
+    <p>
+        © 2026 Divya Ammulu · Built with HTML, Tailwind CSS & JavaScript
+    </p>
+    <p class="mt-1">
+        Built with consistency, curiosity, and clean engineering ✨
+    </p>
+  </footer>
+
+  <!-- ================= NAVBAR ================= -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/70 backdrop-blur border-b border-white/10">
+   <div class="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+
+        <span class="text-indigo-400 font-semibold tracking-wide">
+        Divya
+        </span>
+
+        <div class="hidden md:flex gap-6 text-sm text-gray-300">
+        <a href="#education" class="nav-link hover:text-indigo-300 transition">Education</a>
+        <a href="#skills" class="nav-link hover:text-indigo-300 transition">Skills</a>
+        <a href="#projects" class="nav-link hover:text-indigo-300 transition">Projects</a>
+        <a href="#certifications" class="nav-link hover:text-indigo-300 transition">Certifications</a>
+        <a href="#contact" class="nav-link hover:text-indigo-300 transition">Contact</a>
+        </div>
+    </div>
+  </nav>
+
+  <script>
+    const revealElements = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver(
+        (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            }
+        });
+        },
+        { threshold: 0.15 }
+    );
+
+    revealElements.forEach(el => revealObserver.observe(el));
+  </script>
+  <script>
+    const roles = [
+        "Software Engineering Student | AI & ML | Data Analysis",
+        "Software Engineering Student | Backend & ML",
+        "Software Engineering Student | Data & Systems"
+    ];
+
+    let index = 0;
+    const heroText = document.getElementById("hero-text");
+
+    setInterval(() => {
+        heroText.style.opacity = 0;
+
+        setTimeout(() => {
+        index = (index + 1) % roles.length;
+        heroText.textContent = roles[index];
+        heroText.style.opacity = 1;
+        }, 400);
+    }, 2600);
+  </script>
+  <script>
+    document.querySelectorAll(".skill-card").forEach(card => {
+        card.addEventListener("mousemove", e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--x", `${e.clientX - rect.left}px`);
+        card.style.setProperty("--y", `${e.clientY - rect.top}px`);
+        });
+    });
+  </script>
+  <script>
+    document.querySelectorAll(".project-card").forEach(card => {
+        card.addEventListener("mousemove", e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--x", `${e.clientX - rect.left}px`);
+        card.style.setProperty("--y", `${e.clientY - rect.top}px`);
+        });
+    });
+  </script>
+  <script>
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    window.addEventListener("scroll", () => {
+        let current = "";
+
+        sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        if (scrollY >= sectionTop) {
+            current = section.getAttribute("id");
+        }
+        });
+
+        navLinks.forEach(link => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${current}`) {
+            link.classList.add("active");
+        }
+        });
+    });
+  </script>
+
+</html>
