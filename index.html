@@ -3,979 +3,1583 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Divya.R | Software Engineer</title>
+  <title>DIVYA.R — Software Engineer</title>
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
+    /* =============================================
+       CSS VARIABLES  — easy to explain to panel
+    ============================================= */
+    :root {
+      --bg:       #0a0b0e;
+      --bg2:      #10121a;
+      --gold:     #c9a84c;
+      --gold-lt:  #e8c96a;
+      --teal:     #2dd4bf;
+      --white:    #f1f0ec;
+      --muted:    #5c6070;
+      --muted2:   #9099b0;
+      --border:   rgba(255,255,255,0.09);
+      --border2:  rgba(201,168,76,0.25);
+    }
+
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #020617;
-      color: #e5e7eb;
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg);
+      color: var(--white);
       overflow-x: hidden;
     }
+    ::selection { background: var(--gold); color: #000; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
 
-    /* Glassmorphism */
-    .glass {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    canvas {
+    /* =============================================
+       BACKGROUND GRID  — made with CSS only
+    ============================================= */
+    body::before {
+      content: '';
       position: fixed;
       inset: 0;
-      z-index: -1;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
     }
-    /* ===== About Me Micro Interaction ===== */
-    #about span {
-        transition: all 0.3s ease;
+
+    /* =============================================
+       NAVBAR
+       — uses Flexbox (justify-between, align-center)
+    ============================================= */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 60px;
+      padding: 0 48px;
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,11,14,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
-    #about span:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 18px rgba(99,102,241,0.35);
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 1px;
     }
-    /* ===== Scroll Reveal Animation ===== */
+    .nav-logo span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;                        /* FLEXBOX */
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      text-decoration: none;
+      font-weight: 500;
+      /* CSS TRANSITION */
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      /* CSS TRANSITION */
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-badge {
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 7px;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: rgba(45,212,191,0.08);
+      border: 1px solid rgba(45,212,191,0.25);
+      border-radius: 100px;
+      padding: 5px 14px;
+    }
+    /* CSS ANIMATION — the green dot pulse */
+    .dot {
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;   /* CSS ANIMATION */
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    /* =============================================
+       HERO SECTION
+       — uses CSS Grid (two columns)
+    ============================================= */
+    #hero {
+      min-height: 100vh;
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 48px;
+      padding: 80px 48px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* CSS ANIMATION — fade up on page load */
+    .hero-left { animation: fadeUp 0.8s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: rgba(45,212,191,0.07);
+      border: 1px solid rgba(45,212,191,0.22);
+      border-radius: 6px;
+      padding: 8px 16px;
+      margin-bottom: 28px;
+      /* CSS ANIMATION */
+      animation: fadeUp 0.7s ease 0.1s both;
+    }
+    .hero-tag::before { content: '▶ '; color: var(--gold); }
+
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 7vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -2px;
+      color: var(--white);
+      margin-bottom: 12px;
+      /* CSS ANIMATION */
+      animation: fadeUp 0.7s ease 0.2s both;
+    }
+    .hero-name em { font-style: italic; color: var(--gold); }
+
+    /* The typing text row */
+    .hero-role {
+      font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+      color: var(--muted2);
+      margin-bottom: 24px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      /* CSS ANIMATION */
+      animation: fadeUp 0.7s ease 0.35s both;
+    }
+    /* The blinking cursor — pure CSS animation */
+    #typed-text {
+      color: var(--white);
+      font-weight: 500;
+    }
+    .cursor {
+      display: inline-block;
+      width: 2px; height: 1.1em;
+      background: var(--gold);
+      margin-left: 3px;
+      vertical-align: middle;
+      /* CSS ANIMATION */
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    .hero-bio {
+      font-size: 0.97rem;
+      line-height: 1.85;
+      color: var(--muted2);
+      max-width: 460px;
+      margin-bottom: 36px;
+      /* CSS ANIMATION */
+      animation: fadeUp 0.7s ease 0.5s both;
+    }
+    .hero-bio b { color: var(--white); font-weight: 600; }
+
+    .hero-btns {
+      display: flex;                        /* FLEXBOX */
+      gap: 14px;
+      flex-wrap: wrap;
+      /* CSS ANIMATION */
+      animation: fadeUp 0.7s ease 0.65s both;
+    }
+    .btn {
+      padding: 13px 30px;
+      border-radius: 6px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      /* CSS TRANSITION */
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s;
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: #000;
+      border: 1px solid var(--gold);
+    }
+    .btn-gold:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(201,168,76,0.35);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* ---- Hero Right Card ---- */
+    .hero-right {
+      /* CSS ANIMATION */
+      animation: fadeUp 0.7s ease 0.8s both;
+    }
+    .hero-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Gold glow in top-right — CSS only */
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.18), transparent 65%);
+      pointer-events: none;
+    }
+
+    .card-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 8px;
+    }
+    .card-label::before { content: ''; width: 18px; height: 1px; background: var(--muted); }
+
+    /* Stats row — CSS Grid */
+    .stats-grid {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 10px;
+      text-align: center;
+      /* CSS TRANSITION */
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .stat-box:hover {
+      border-color: var(--border2);
+      transform: translateY(-3px);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-lbl {
+      font-size: 0.62rem;
+      color: var(--muted2);
+      margin-top: 4px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* Core Stack chips — Flexbox */
+    .chip-wrap {
+      display: flex;                        /* FLEXBOX */
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .chip {
+      padding: 5px 12px;
+      font-size: 0.72rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted2);
+      /* CSS TRANSITION */
+      transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
+    }
+    .chip:hover {
+      background: rgba(201,168,76,0.1);
+      color: var(--gold);
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px; left: 48px;
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 12px;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: fadeUp 1s ease 1.5s both;
+    }
+    /* CSS ANIMATION on the line */
+    .scroll-line {
+      width: 36px; height: 1px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      animation: slideLine 2s ease infinite;
+    }
+    @keyframes slideLine {
+      0%   { transform: scaleX(0); transform-origin: left; }
+      50%  { transform: scaleX(1); transform-origin: left; }
+      51%  { transform: scaleX(1); transform-origin: right; }
+      100% { transform: scaleX(0); transform-origin: right; }
+    }
+
+    /* =============================================
+       SHARED SECTION STYLES
+    ============================================= */
+    section { position: relative; z-index: 1; padding: 110px 0; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+
+    .sec-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 10px;
+    }
+    .sec-label::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+
+    .sec-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      letter-spacing: -1px;
+      line-height: 1.05;
+      color: var(--white);
+      margin-bottom: 56px;
+    }
+    .sec-title em { font-style: italic; color: var(--muted2); }
+
+    /* =============================================
+       ABOUT SECTION
+       — uses CSS Grid (two columns)
+    ============================================= */
+    #about { background: var(--bg); }
+
+    .about-grid {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: 1fr 1.6fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .about-photo {
+      position: sticky;
+      top: 90px;
+    }
+    .photo-box {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      max-height: 440px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Gradient overlay — pure CSS */
+    .photo-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 25% 20%, rgba(201,168,76,0.15), transparent 55%),
+        radial-gradient(ellipse at 75% 80%, rgba(45,212,191,0.1), transparent 55%);
+    }
+    .photo-tag {
+      position: absolute;
+      bottom: 14px; left: 14px; right: 14px;
+      background: rgba(10,11,14,0.88);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 16px;
+    }
+    .photo-tag-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+    .photo-tag-role {
+      font-size: 0.65rem;
+      color: var(--teal);
+      letter-spacing: 0.1em;
+    }
+
+    .about-text-intro {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      line-height: 1.65;
+      color: var(--muted2);
+      margin-bottom: 24px;
+    }
+    .about-text-intro b { color: var(--white); font-style: normal; }
+
+    .about-para {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--muted2);
+      margin-bottom: 20px;
+    }
+    .about-para b { color: var(--white); font-weight: 600; }
+
+    .divider { width: 100%; height: 1px; background: var(--border); margin: 30px 0; }
+
+    /* Trait cards — CSS Grid */
+    .traits-grid {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+    .trait {
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 9px;
+      padding: 11px 15px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--muted2);
+      /* CSS TRANSITION */
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    }
+    .trait:hover {
+      background: rgba(201,168,76,0.06);
+      border-color: var(--border2);
+      transform: translateX(5px);
+    }
+
+    /* =============================================
+       EDUCATION SECTION
+       — uses a timeline with CSS border
+    ============================================= */
+    #education { background: var(--bg2); }
+
+    .timeline {
+      position: relative;
+      padding-left: 36px;
+    }
+    /* The vertical line — pure CSS */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 8px; bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--gold), var(--teal), transparent);
+    }
+    .edu-item {
+      position: relative;
+      padding-bottom: 44px;
+      margin-bottom: 0;
+    }
+    .edu-item:last-child { padding-bottom: 0; }
+    /* Timeline dot — CSS */
+    .edu-item::before {
+      content: '';
+      position: absolute;
+      left: -40px; top: 7px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(201,168,76,0.5);
+    }
+    .edu-item + .edu-item { border-top: 1px solid var(--border); padding-top: 40px; }
+
+    .edu-year {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .edu-degree {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      line-height: 1.25;
+      margin-bottom: 7px;
+      letter-spacing: -0.5px;
+    }
+    .edu-school { font-size: 0.85rem; color: var(--muted2); margin-bottom: 12px; }
+    .edu-score {
+      display: inline-flex;               /* FLEXBOX */
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: var(--teal);
+      background: rgba(45,212,191,0.08);
+      border: 1px solid rgba(45,212,191,0.22);
+      border-radius: 100px;
+      padding: 4px 14px;
+    }
+
+    /* =============================================
+       SKILLS SECTION
+       — uses CSS Grid bento layout
+    ============================================= */
+    #skills { background: var(--bg); }
+
+    /* CSS Grid bento — different column spans */
+    .skills-bento {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+    .sk { grid-column: span 3; }
+    .sk-wide { grid-column: span 6; }
+    .sk-full { grid-column: span 12; }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 26px;
+      /* CSS TRANSITION */
+      transition: border-color 0.35s, transform 0.35s, box-shadow 0.35s;
+    }
+    .skill-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-4px);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.4);
+    }
+    .skill-icon { font-size: 1.5rem; margin-bottom: 14px; }
+    .skill-name {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .skill-tags {
+      display: flex;                        /* FLEXBOX */
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .skill-tag {
+      padding: 5px 11px;
+      font-size: 0.72rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted2);
+      /* CSS TRANSITION */
+      transition: background 0.22s, color 0.22s, border-color 0.22s, transform 0.2s;
+    }
+    .skill-tag:hover {
+      background: rgba(201,168,76,0.1);
+      color: var(--gold);
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    /* Quote card */
+    .quote-card {
+      background: linear-gradient(135deg, rgba(201,168,76,0.07), rgba(45,212,191,0.04));
+      border: 1px solid var(--border2);
+    }
+    .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.45rem;
+      color: var(--white);
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    .quote-text em { color: var(--gold); font-style: normal; }
+    .quote-by { font-size: 0.65rem; color: var(--muted2); letter-spacing: 0.1em; }
+
+    /* Learning banner */
+    .learn-banner {
+      background: linear-gradient(90deg, rgba(45,212,191,0.05), rgba(201,168,76,0.04));
+      border: 1px solid rgba(45,212,191,0.18);
+      border-radius: 12px;
+      padding: 22px 26px;
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .learn-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      flex-shrink: 0;
+    }
+    .learn-chips {
+      display: flex;                        /* FLEXBOX */
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .learn-chip {
+      padding: 5px 16px;
+      font-size: 0.78rem;
+      background: rgba(45,212,191,0.07);
+      border: 1px solid rgba(45,212,191,0.2);
+      border-radius: 100px;
+      color: var(--teal);
+      /* CSS TRANSITION */
+      transition: background 0.3s, transform 0.2s;
+    }
+    .learn-chip:hover { background: rgba(45,212,191,0.14); transform: translateY(-2px); }
+
+    /* =============================================
+       PROJECTS SECTION
+       — uses CSS Grid bento layout
+    ============================================= */
+    #projects { background: var(--bg2); }
+
+    .proj-bento {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+    .pj-7  { grid-column: span 7; }
+    .pj-5  { grid-column: span 5; }
+    .pj-12 { grid-column: span 12; }
+
+    .proj-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      /* CSS TRANSITION */
+      transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s;
+    }
+    .proj-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 55px rgba(0,0,0,0.5);
+    }
+    .proj-card.featured { border-color: rgba(201,168,76,0.2); }
+    .proj-card.featured:hover { border-color: rgba(201,168,76,0.5); }
+
+    /* Glow effect — pure CSS radial gradient */
+    .proj-glow {
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      filter: blur(50px);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .proj-num {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.04);
+      position: absolute;
+      top: 14px; right: 18px;
+      line-height: 1;
+    }
+
+    .proj-badge {
+      display: inline-flex;               /* FLEXBOX */
+      align-items: center;
+      gap: 4px;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+    }
+    .badge-gold { color: var(--gold); background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); }
+    .badge-teal { color: var(--teal); background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.22); }
+    .badge-dim  { color: var(--muted2); background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
+
+    .proj-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--white);
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .proj-row {
+      display: flex;                        /* FLEXBOX */
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 0.83rem;
+      line-height: 1.6;
+    }
+    .proj-key {
+      font-size: 0.63rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      flex-shrink: 0;
+      padding-top: 2px;
+      width: 60px;
+    }
+    .proj-val { color: var(--muted2); }
+    .proj-tags {
+      display: flex;                        /* FLEXBOX */
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .proj-tag {
+      padding: 3px 10px;
+      font-size: 0.7rem;
+      background: rgba(200,158,255,0.06);
+      border: 1px solid rgba(200,158,255,0.16);
+      border-radius: 4px;
+      color: #c89eff;
+    }
+    /* Wide project — two columns inside with CSS Grid */
+    .proj-split {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    /* =============================================
+       CERTIFICATIONS
+       — uses CSS Grid two-column layout
+    ============================================= */
+    #certifications { background: var(--bg); }
+
+    .cert-grid {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .cert-card {
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 18px;
+      padding: 22px 24px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      /* CSS TRANSITION */
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    }
+    /* Left border reveal — CSS transition on transform */
+    .cert-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--gold), var(--teal));
+      border-radius: 2px 0 0 2px;
+      transform: scaleY(0);
+      transform-origin: top;
+      /* CSS TRANSITION */
+      transition: transform 0.4s ease;
+    }
+    .cert-card:hover {
+      background: rgba(255,255,255,0.03);
+      border-color: var(--border2);
+      transform: translateX(6px);
+    }
+    .cert-card:hover::before { transform: scaleY(1); }
+
+    .cert-num {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.9rem;
+      color: rgba(255,255,255,0.06);
+      flex-shrink: 0;
+      line-height: 1;
+      width: 30px;
+    }
+    .cert-org {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 5px;
+    }
+    .cert-name { font-size: 0.92rem; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .cert-desc { font-size: 0.76rem; color: var(--muted2); line-height: 1.5; }
+    .cert-arrow {
+      margin-left: auto;
+      color: var(--muted);
+      flex-shrink: 0;
+      font-size: 1rem;
+      /* CSS TRANSITION */
+      transition: transform 0.3s, color 0.3s;
+    }
+    .cert-card:hover .cert-arrow { transform: translate(3px, -3px); color: var(--gold); }
+
+    /* =============================================
+       CONTACT SECTION
+    ============================================= */
+    #contact { background: var(--bg2); }
+
+    .contact-grid {
+      display: grid;                        /* CSS GRID */
+      grid-template-columns: 1.2fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .contact-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -2px;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    .contact-heading em { font-style: italic; color: var(--gold); }
+    .contact-sub {
+      font-size: 0.94rem;
+      color: var(--muted2);
+      line-height: 1.8;
+      max-width: 360px;
+    }
+    .contact-links {
+      display: flex;                        /* FLEXBOX */
+      flex-direction: column;
+      gap: 12px;
+    }
+    .contact-link {
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      gap: 16px;
+      padding: 18px 22px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      text-decoration: none;
+      position: relative;
+      /* CSS TRANSITION */
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    }
+    .contact-link::after {
+      content: '↗';
+      position: absolute;
+      right: 18px;
+      color: var(--muted);
+      /* CSS TRANSITION */
+      transition: transform 0.3s, color 0.3s;
+    }
+    .contact-link:hover {
+      background: rgba(255,255,255,0.03);
+      border-color: var(--border2);
+      transform: translateX(-6px);
+    }
+    .contact-link:hover::after { transform: translate(3px,-3px); color: var(--gold); }
+    .link-icon {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 7px;
+      display: flex;                        /* FLEXBOX */
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .link-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); margin-bottom: 3px; }
+    .link-val   { font-size: 0.88rem; color: var(--white); font-weight: 500; }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 26px 48px;
+      display: flex;                        /* FLEXBOX */
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-right { font-size: 0.65rem; color: var(--muted); text-align: right; line-height: 1.6; }
+    .footer-right span { color: var(--gold); }
+
+    /* =============================================
+       SCROLL REVEAL  — JS adds .visible class,
+       CSS does the animation
+    ============================================= */
     .reveal {
-        opacity: 0;
-        transform: translateY(40px);
-        transition: opacity 0.8s ease, transform 0.8s ease;
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.85s ease, transform 0.85s ease;
     }
+    .reveal.hidden {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .reveal.hidden.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
 
-    .reveal.active {
-        opacity: 1;
-        transform: translateY(0);
+    /* =============================================
+       RESPONSIVE  — media queries
+    ============================================= */
+    @media (max-width: 1024px) {
+      #hero          { grid-template-columns: 1fr; padding: 100px 32px 60px; gap: 40px; }
+      .about-grid    { grid-template-columns: 1fr; gap: 36px; }
+      .about-photo   { position: static; }
+      .photo-box     { max-height: 200px; aspect-ratio: 16 / 6; }
+      .sk, .sk-wide  { grid-column: span 6; }
+      .sk-full       { grid-column: span 12; }
+      .pj-7,.pj-5,.pj-12 { grid-column: span 12; }
+      .proj-split    { grid-template-columns: 1fr; }
+      .cert-grid     { grid-template-columns: 1fr; }
+      .contact-grid  { grid-template-columns: 1fr; gap: 48px; }
+      nav            { padding: 0 28px; }
+      .wrap          { padding: 0 28px; }
+      .nav-links     { display: none; }
+      .scroll-hint   { left: 28px; }
+      footer         { flex-direction: column; gap: 10px; padding: 22px 28px; text-align: center; }
+      .footer-right  { text-align: center; }
     }
-    #hero-text {
-        transition: opacity 0.4s ease;
+    @media (max-width: 640px) {
+      .sk, .sk-wide  { grid-column: span 12; }
+      .traits-grid   { grid-template-columns: 1fr; }
     }
-
-    /* ===== Skill Card Progress ===== */
-    .skill-card {
-        position: relative;
-        overflow: hidden;
-    }
-    .skill-level {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 4px;
-        background: linear-gradient(to right, #6366f1, #22d3ee);
-        width: 0%;
-        transition: width 0.5s ease;
-    }
-    .skill-card:hover .skill-level {
-        width: 100%;
-    }
-
-    /* ===== Skill Card Premium Hover ===== */
-    .skill-card {
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-    .skill-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(99,102,241,0.15);
-    }
-
-    /* soft glow border */
-    .skill-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: 16px;
-        padding: 1px;
-        background: linear-gradient(120deg, transparent, rgba(99,102,241,0.6), transparent);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-    }   
-    .skill-card:hover::before {
-        opacity: 1;
-    }
-    .skill-card {
-        position: relative;
-        overflow: hidden;
-    }
-    .skill-card::after {
-        content: "";
-        position: absolute;
-        width: 180px;
-        height: 180px;
-        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 60%);
-        top: var(--y);
-        left: var(--x);
-        transform: translate(-50%, -50%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-    }   
-    .skill-card:hover::after {
-        opacity: 1;
-    }
-    .skill-card:hover {
-        box-shadow: 0 0 35px rgba(99,102,241,0.15);
-    }
-    .skill-card span {
-        transition: all 0.3s ease;
-        cursor: default;
-    }
-    .skill-card span:hover {
-        background: rgba(99, 102, 241, 0.2);
-        color: #c7d2fe;
-        box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
-        transform: translateY(-2px);
-    }
-    /* ===== Project Card Hover Glow ===== */
-    .project-card {
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-    .project-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(99,102,241,0.2);
-    }
-    .project-card::after {
-        content: "";
-        position: absolute;
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 60%);
-        top: var(--y);
-        left: var(--x);
-        transform: translate(-50%, -50%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-    }
-    .project-card:hover::after {
-        opacity: 1;
-    }
-    /* ===== Gradient Animated Name ===== */
-    .gradient-text {
-        background: linear-gradient(90deg, #6366f1, #22d3ee, #a78bfa);
-        background-size: 300% 300%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradientMove 6s ease infinite;
-    }
-    @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    /* Hero Glow Effect */
-    .hero-glow {
-        position: absolute;
-        width: 420px;
-        height: 420px;
-        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 60%);
-        filter: blur(80px);
-        z-index: -1;
-    }
-    /* CTA Button Animation */
-    .cta-btn {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .cta-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 30px rgba(99,102,241,0.35);
-    }
-    .nav-link.active {
-        color: #a5b4fc;
-        border-bottom: 2px solid #6366f1;
-    }
-
   </style>
 </head>
-
 <body>
 
-  <!-- ================= LIVE PARTICLE BACKGROUND ================= -->
-  <canvas id="bg"></canvas>
-
-  <!-- ================= HERO ================= -->
-  <section class="min-h-screen flex items-center justify-center px-6 pt-24 reveal relative">
-    <div class="hero-glow"></div>
-    <div class="max-w-4xl text-center">
-
-      <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight">
-        Hi, I’m <span class="gesture-text">Divya.R</span>
-      </h1>
-
-      <p class="mt-4 text-xl font-medium text-indigo-200 tracking-wide">
-        <span id="hero-text">Software Engineer Student | AI & ML | Data Analysis</span>
-      </p>
-
-      <p class="mt-6 text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
-        Software Engineering student with hands-on experience in data analysis
-        and AI/ML, focused on building reliable, scalable, and data-driven
-        solutions through strong problem-solving and clean code.
-      </p>
-
-      <div class="mt-10 flex justify-center gap-5 flex-wrap">
-        <a href="assets/resume.pdf"
-            class="cta-btn px-8 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition font-medium">
-            View Resume
-        </a>
-
-        <a href="#skills"
-            class="cta-btn px-8 py-3 rounded-xl border border-indigo-400 hover:bg-indigo-400/10 transition font-medium">
-            View Skills
-        </a>
-      </div>
-
-    </div>
-    <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-indigo-300 animate-bounce">
-        <span class="text-xs mb-1">Scroll</span>
-        <span class="text-xl">⬇️</span>
-    </div>
-    <!-- Hero Stats -->
-    <div class="mt-10 grid grid-cols-3 gap-6 max-w-md mx-auto text-center">
-        <div class="glass rounded-xl py-4">
-            <p class="text-2xl font-bold text-indigo-300">5+</p>
-            <p class="text-xs text-gray-400 mt-1">Projects</p>
-        </div>
-        <div class="glass rounded-xl py-4">
-            <p class="text-2xl font-bold text-indigo-300">4</p>
-            <p class="text-xs text-gray-400 mt-1">Certifications</p>
-        </div>
-        <div class="glass rounded-xl py-4">
-            <p class="text-2xl font-bold text-indigo-300">8.31</p>
-            <p class="text-xs text-gray-400 mt-1">CGPA</p>
-        </div>
-    </div>
-  </section>
-
-  <!-- ================= ABOUT ================= -->
-  <section id = "about" class="py-24 px-6 reveal">
-    <div class="max-w-6xl mx-auto">
-
-        <div class="glass rounded-3xl p-10 md:p-14
-                    grid md:grid-cols-5 gap-10
-                    hover:shadow-[0_0_60px_rgba(99,102,241,0.15)]
-                    transition duration-500">
-
-            <!-- LEFT: Identity -->
-            <div class="md:col-span-2 space-y-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-indigo-300">
-                    About Me
-                </h2>
-
-                <div class="w-16 h-1 bg-indigo-500 rounded"></div>
-
-                <p class="text-gray-300 text-lg leading-relaxed">
-                    Final-year <span class="text-indigo-300 font-medium">Software Engineering</span> student
-                    with a strong interest in
-                    <span class="text-indigo-300 font-medium">Data Analysis</span> and
-                    <span class="text-indigo-300 font-medium">AI & Machine Learning</span>.
-                </p>
-
-                <!-- Identity pills -->
-                <div class="flex flex-wrap gap-3 pt-2">
-                    <span class="px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">
-                        🔍 Problem Solver
-                    </span>
-                    <span class="px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">
-                        📊 Data-Driven Thinker
-                    </span>
-                    <span class="px-4 py-2 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">
-                        ⚙️ Clean Code Focused
-                    </span>
-                </div>
-            </div>
-
-            <!-- RIGHT: Story -->
-            <div class="md:col-span-3 relative pl-6 space-y-6 text-gray-300 leading-relaxed">
-
-            <!-- Accent line -->
-            <span class="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-indigo-400 to-indigo-600 rounded-full"></span>
-
-            <p>
-                I’m a final-year <span class="text-indigo-300 font-medium">Software Engineering</span> student with strong
-                foundations in <span class="text-indigo-300">data structures</span>,
-                <span class="text-indigo-300">object-oriented programming</span>, and
-                <span class="text-indigo-300">system-level thinking</span>, along with a growing
-                interest in <span class="text-indigo-300">data analysis</span> and
-                <span class="text-indigo-300">AI & machine learning</span>.
-            </p>
-
-            <p>
-                Through academic projects and hands-on implementations, I’ve gained practical
-                experience across the <span class="text-indigo-300">software development lifecycle</span>,
-                backend logic, machine learning techniques, and
-                <span class="text-indigo-300">data-driven decision making</span>.
-                I’m continuously learning and strengthening my core software engineering skills
-                to grow as a well-rounded engineer.
-            </p>
-
-            <p>
-                I enjoy solving structured problems, working with real-world datasets, and
-                designing <span class="text-indigo-300 font-medium">reliable, scalable software
-                systems</span> that follow clean coding practices and sound engineering principles.
-            </p>
-
-            <!-- Identity line -->
-            <p class="text-sm text-indigo-400 pt-2">
-                💡 Curious learner · Clean code advocate · Systems-first thinker
-            </p>
-        </div>
-        </div>
-    </div>
-  </section>
-
-
-  <!-- ================= EDUCATION ================= -->
-  <section id = "education" class="py-20 px-6 reveal">
-    <div class="max-w-6xl mx-auto">
-
-        <h2 class="text-3xl font-bold text-center text-indigo-300 mb-12">
-            Education
-        </h2>
-
-        <div class="grid md:grid-cols-3 gap-8">
-
-        <!-- College -->
-        <div class="glass rounded-2xl p-6 text-center hover:-translate-y-2 transition">
-            <div class="text-3xl mb-3">🎓</div>
-
-            <h3 class="font-semibold text-indigo-200">
-                B.Tech – M.Tech (Integrated)
-            </h3>
-
-            <p class="text-gray-400 text-sm mt-2">
-                Software Engineering
-            </p>
-
-            <p class="text-gray-400 text-sm mt-1">
-                VIT, Vellore
-            </p>
-
-            <p class="text-gray-500 text-xs mt-2">
-                2021 – 2026
-            </p>
-            <p class="text-gray-400 text-sm mt-2">
-                CGPA : 8.31/10
-            </p>
-        </div>
-
-        <!-- Class 12 -->
-        <div class="glass rounded-2xl p-6 text-center hover:-translate-y-2 transition">
-            <div class="text-3xl mb-3">🏫</div>
-
-            <h3 class="font-semibold text-indigo-200">
-                Higher Secondary (Class XII)
-            </h3>
-
-            <p class="text-gray-400 text-sm mt-2">
-                Science Stream
-            </p>
-
-            <p class="text-gray-400 text-sm mt-1">
-                State Board / CBSE
-            </p>
-
-            <p class="text-gray-500 text-xs mt-2">
-                Year of Completion
-            </p>
-            <p class="text-gray-400 text-sm mt-2">
-                Percentage : 93%
-            </p>
-        </div>
-
-        <!-- Class 10 -->
-        <div class="glass rounded-2xl p-6 text-center hover:-translate-y-2 transition">
-            <div class="text-3xl mb-3">📘</div>
-
-            <h3 class="font-semibold text-indigo-200">
-                Secondary School (Class X)
-            </h3>
-
-            <p class="text-gray-400 text-sm mt-2">
-                General Studies
-            </p>
-
-            <p class="text-gray-400 text-sm mt-1">
-                State Board / CBSE
-            </p>
-
-            <p class="text-gray-500 text-xs mt-2">
-                Year of Completion
-            </p>
-            <p class="text-gray-400 text-sm mt-2">
-                Percentage: 100%
-            </p>
-        </div>
-
-        </div>
-    </div>
-  </section>
-
-  <!-- ================= SKILLS ================= -->
-  <section id="skills" class="py-24 px-6 reveal">
-    <div class="max-w-6xl mx-auto">
-
-        <h2 class="text-3xl md:text-4xl font-bold text-center text-indigo-300 mb-14">
-            Skills
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-
-            <!-- Programming -->
-            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
-                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
-                    Programming
-                </h3>
-                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Java</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">C++</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Python</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">SQL</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">HTML & CSS</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">React.js</span>
-                </div>
-                <div class="skill-level"></div>
-            </div>
-            
-            <!-- AI / ML & Data -->
-                <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
-                    <h3 class="text-lg font-semibold text-indigo-200 mb-4">
-                        AI / ML & Data
-                    </h3>
-                    <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Machine Learning</span>
-                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Data Analysis</span>
-                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Data Visualization</span>
-                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Data Mining</span>
-                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">NLP Basics</span>
-                    </div>
-                    <div class="skill-level"></div>
-                </div>
-
-            <!-- Core Software Engineering -->
-            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
-                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
-                    Core CS Foundations
-                </h3>
-                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">DSA</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">OOP</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">DBMS</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Operating Systems</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Networking</span>
-                </div>
-            </div>
-
-            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card">
-                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
-                    Software Engineering Practices
-                </h3>
-                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">SDLC</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Software Development Models</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Software Design</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Testing</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Security</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-300 text-sm">Cloud Computing</span>
-                </div>
-            </div>
-            <!-- Tools -->
-            <div class="glass rounded-2xl p-6 hover:-translate-y-2 transition skill-card 
-                        lg:col-span-2 lg:col-start-2">
-
-                <h3 class="text-lg font-semibold text-indigo-200 mb-4">
-                    Tools & Platforms
-                </h3>
-                <div class="w-10 h-1 bg-indigo-500 rounded mb-4"></div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Git & GitHub</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">VS CODE</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Jupyter Noteboob</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Power BI</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Tableau</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Figma</span>
-                     <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-sm">Microsoft Office</span>
-                </div>
-
-                <div class="skill-level"></div>
-            </div>
-      </div>
-    </div>
-  </section>
-  <!-- ================= CURRENTLY LEARNING ================= -->
-  <section id = "current learning" class="py-20 px-6 reveal">
-    <div class="max-w-5xl mx-auto">
-
-        <div class="glass rounded-3xl p-10 text-center">
-        <h2 class="text-3xl font-bold text-indigo-300 mb-4">
-            Currently Learning
-        </h2>
-
-        <p class="text-gray-400 mb-8">
-            Actively improving my skills by learning and practicing the following areas.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-4">
-
-            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
-            🧩 System Design Basics
-            </div>
-
-            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
-            🤖 Applied Machine Learning
-            </div>
-
-            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
-            📊 Data Analysis Projects  & Visualization
-            </div>
-
-            <div class="px-5 py-3 rounded-xl bg-indigo-500/10 text-indigo-200">
-            ☁️ Cloud &  Devops Deployment Basics
-            </div>
-
-        </div>
-        </div>
-
-    </div>
-  </section>
-
-  <!-- ================= Projects ================= -->
-  <section id = "projects" class="py-24 px-6 reveal">
-    <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-bold text-center text-indigo-300 mb-14">
-            Projects
-        </h2>
-        <div class="grid md:grid-cols-2 gap-8">
-
-            <!-- Project 1 -->
-            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
-                <span class="inline-block mb-2 px-3 py-1 text-xs rounded-full
-                            bg-indigo-500/10 text-indigo-300">
-                    ⭐ Featured Project
-                </span>
-                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
-                    Sign Language Detection using AI
-                </h3>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Problem:</span>
-                    Communication gap for hearing-impaired individuals.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Solution:</span>
-                    Built a real-time hand gesture recognition system using ML and computer vision.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-4">
-                    <span class="text-indigo-300">Outcome:</span>
-                    Enabled accurate gesture-based communication to improve accessibility.
-                </p>
-
-                <div class="flex flex-wrap gap-2 text-sm">
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Python</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Machine Learning</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Computer Vision</span>
-                </div>
-            </div>
-
-            <!-- Project 2 -->
-            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
-                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
-                    Breast Cancer Prediction using ML
-                </h3>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Problem:</span>
-                    Need for early and accurate breast cancer detection.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Solution:</span>
-                    Developed an ML-based classification model using medical dataset features.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-4">
-                    <span class="text-indigo-300">Outcome:</span>
-                    Achieved reliable predictions while reducing false negatives.
-                </p>
-
-                <div class="flex flex-wrap gap-2 text-sm">
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Python</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">ML Algorithms</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Data Analysis</span>
-                </div>
-            </div>
-            <!-- Project 3 -->
-            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
-                <span class="inline-block mb-2 px-3 py-1 text-xs rounded-full
-                            bg-indigo-500/10 text-indigo-300">
-                    ⭐ Featured Project
-                </span>
-                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
-                    Sentiment Analysis on Product Reviews
-                </h3>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Problem:</span>
-                    Difficulty in understanding customer opinions from large review datasets.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Solution:</span>
-                    Applied NLP techniques to classify product reviews by sentiment.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-4">
-                    <span class="text-indigo-300">Outcome:</span>
-                    Extracted meaningful sentiment trends to analyze customer feedback.
-                </p>
-
-                <div class="flex flex-wrap gap-2 text-sm">
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Python</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">NLP</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Data Processing</span>
-                </div>
-            </div>
-            <!-- Project 4 -->
-            <div class="glass rounded-2xl p-6 transition hover:-translate-y-2">
-                <h3 class="text-xl font-semibold text-indigo-200 mb-3">
-                    Hostel Help Line Management System
-                </h3>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Problem:</span>
-                    Inefficient handling and tracking of hostel-related complaints.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-1">
-                    <span class="text-indigo-300">Solution:</span>
-                    Developed a web-based complaint management system following SDLC practices.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-4">
-                    <span class="text-indigo-300">Outcome:</span>
-                    Improved complaint resolution efficiency and response time.
-                </p>
-
-                <div class="flex flex-wrap gap-2 text-sm">
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">HTML & CSS</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Backend Logic</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">SDLC</span>
-                </div>
-            </div>
-
-            <!-- Project 5 -->
-           <div class="glass rounded-2xl p-6 transition hover:-translate-y-2 md:col-span-2">
-                <span class="inline-block mb-2 px-3 py-1 text-xs rounded-full
-                            bg-indigo-500/10 text-indigo-300">
-                    ⭐ Featured Project
-                </span>
-                <h3 class="text-xl font-semibold text-indigo-200 mb-3 text-center">
-                    Smart Dustbin using IoT
-                </h3>
-
-                <p class="text-sm text-gray-400 mb-1 text-center">
-                    <span class="text-indigo-300">Problem:</span>
-                    Manual waste monitoring leading to inefficient collection.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-1 text-center">
-                    <span class="text-indigo-300">Solution:</span>
-                    Designed an IoT-based smart dustbin using sensors and microcontrollers.
-                </p>
-
-                <p class="text-sm text-gray-400 mb-4 text-center">
-                    <span class="text-indigo-300">Outcome:</span>
-                    Enabled optimized waste collection through real-time monitoring.
-                </p>
-
-                <div class="flex flex-wrap justify-center gap-2 text-sm">
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">IoT</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Sensors</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Embedded Systems</span>
-                    <span class="px-3 py-1 rounded-full bg-indigo-400/20">Cloud Integration</span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-  </section>
-  
-  <!-- Certifications -->
-  <section id="certifications" class="py-24 px-6 reveal">
-    <div class="max-w-5xl mx-auto">
-
-         <h2 class="text-3xl md:text-4xl font-bold text-center text-indigo-300 mb-14">
-            Certifications
-        </h2>
-
-        <div class="glass rounded-3xl p-10 md:p-12">
-
-            <ul class="space-y-6 text-gray-300">
-                <!-- Azure -->
-                <li>
-                    <a href="assets/certificates/azure-ai-certificate.pdf"
-                        target="_blank"
-                        class="text-indigo-300 hover:underline font-medium">
-                        Microsoft Azure AI Fundamentals (AI-900)
-                    </a>
-                    <p class="text-sm text-gray-400 mt-1">
-                        Fundamentals of AI workloads, machine learning concepts, and Azure AI services.
-                    </p>
-                </li>
-                
-                <!-- Infosys -->
-                <li>
-                    <a href="assets/certificates/infosys-certificate.pdf"
-                        target="_blank"
-                        class="text-indigo-300 hover:underline font-medium">
-                        Exploratory Data Analysis – Infosys
-                    </a>
-                    <p class="text-sm text-gray-400 mt-1">
-                        Practical experience in data cleaning, visualization, and insight generation.
-                    </p>
-                </li>
-
-                <!--Deloitte-->
-                <li>
-                    <a href="assets/certificates/deloitte-data-analytics.pdf"
-                        target="_blank"
-                        class="text-indigo-300 hover:underline font-medium">
-                        Data Analytics Job Simulation – Deloitte
-                    </a>
-                    <p class="text-sm text-gray-400 mt-1">
-                        Solved real-world business problems using data-driven analysis techniques.
-                    </p>
-                </li>
-
-                <!--Java-->
-                <li>
-                    <a href="assets/certificates/java-certificate.pdf"
-                        target="_blank"
-                        class="text-indigo-300 hover:underline font-medium">
-                        Java Programming Certification
-                    </a>
-                    <p class="text-sm text-gray-400 mt-1">
-                        Strengthened Java fundamentals including OOP, exception handling, and logic building.
-                    </p>
-                </li>
-
-            </ul>
-        </div>
-    </div>
-  </section>
-            
-  <!-- ================= Contact ================= -->
-  <section id = "contact" class="py-24 px-6 reveal">
-    <div class="max-w-4xl mx-auto text-center">
-
-        <h2 class="text-3xl md:text-4xl font-bold text-indigo-300 mb-4">
-            Get In Touch
-        </h2>
-
-        <p class="text-gray-400 mb-10 max-w-2xl mx-auto">
-            I’m actively seeking opportunities in software engineering, data analysis,
-            and AI/ML. Feel free to reach out for internships, full-time roles, or collaborations.
-        </p>
-
-        <div class="flex flex-col sm:flex-row justify-center gap-6">
-            <!-- Email -->
-            <a href="mailto:rdivyavit2003@gmail.com"
-                class="glass px-6 py-4 rounded-xl flex items-center gap-3 justify-center
-                        text-indigo-200 hover:bg-indigo-400/20 transition">
-                <span class="text-xl">📧</span>
-                <span>Email</span>
-            </a>
-
-            <!-- LinkedIn -->
-            <a href="https://www.linkedin.com/in/r-divya-8a9a03357/"
-                target="_blank"
-                class="glass px-6 py-4 rounded-xl flex items-center gap-3 justify-center
-                        text-indigo-200 hover:bg-indigo-400/20 transition">
-                <span class="text-xl">💼</span>
-                <span>LinkedIn</span>
-            </a>
-
-            <!-- GitHub -->
-            <a href="https://github.com/divyarvit"
-                target="_blank"
-                class="glass px-6 py-4 rounded-xl flex items-center gap-3 justify-center
-                        text-indigo-200 hover:bg-indigo-400/20 transition">
-                <span class="text-xl">🧑‍💻</span>
-                <span>GitHub</span>
-            </a>
-        </div>
-    </div>
-  </section>
-  <!-- ================= PARTICLE BACKGROUND SCRIPT ================= -->
-  <script>
-    const canvas = document.getElementById("bg");
-    const ctx = canvas.getContext("2d");
-    let w, h;
-
-    function resize() {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resize);
-    resize();
-
-    const particles = Array.from({ length: 80 }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: Math.random() * 0.5 - 0.25,
-      vy: Math.random() * 0.5 - 0.25
-    }));
-
-    function animate() {
-      ctx.clearRect(0, 0, w, h);
-
-      for (let p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = "#818cf8";
-        ctx.fill();
-      }
-
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 120) {
-            ctx.strokeStyle = `rgba(129,140,248,${1 - dist / 120})`;
-            ctx.lineWidth = 0.4;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      requestAnimationFrame(animate);
-    }
-    animate();
-  </script>
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="py-8 text-center text-sm text-gray-500">
-    <p>
-        © 2026 Divya Ammulu · Built with HTML, Tailwind CSS & JavaScript
-    </p>
-    <p class="mt-1">
-        Built with consistency, curiosity, and clean engineering ✨
-    </p>
-  </footer>
-
-  <!-- ================= NAVBAR ================= -->
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/70 backdrop-blur border-b border-white/10">
-   <div class="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-
-        <span class="text-indigo-400 font-semibold tracking-wide">
-        Divya
-        </span>
-
-        <div class="hidden md:flex gap-6 text-sm text-gray-300">
-        <a href="#education" class="nav-link hover:text-indigo-300 transition">Education</a>
-        <a href="#skills" class="nav-link hover:text-indigo-300 transition">Skills</a>
-        <a href="#projects" class="nav-link hover:text-indigo-300 transition">Projects</a>
-        <a href="#certifications" class="nav-link hover:text-indigo-300 transition">Certifications</a>
-        <a href="#contact" class="nav-link hover:text-indigo-300 transition">Contact</a>
-        </div>
+  <!-- ═══════════ NAVBAR ═══════════ -->
+  <nav>
+    <a href="#hero" class="nav-logo">DIVYA<span>.</span>R</a>
+
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#certifications">Certs</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-badge">
+      <div class="dot"></div>
+      Open to work
     </div>
   </nav>
 
+  <!-- ═══════════ HERO ═══════════ -->
+  <section id="hero">
+
+    <div class="hero-left">
+      <div class="hero-tag">DIVYA.R — software-engineer.init()</div>
+
+      <h1 class="hero-name">
+        Building<br>
+        <em>smart</em><br>
+        software.
+      </h1>
+
+      <!-- Typing animation row -->
+      <div class="hero-role">
+        <span id="typed-text"></span><span class="cursor"></span>
+      </div>
+
+      <p class="hero-bio">
+        Final-year <b>Software Engineering</b> student at VIT, Vellore —
+        passionate about <b>AI &amp; ML</b>, data analysis, and crafting
+        clean, scalable systems that <b>think and work</b>.
+      </p>
+
+      <div class="hero-btns">
+        <a href="assets/resume.pdf" class="btn btn-gold">Resume ↗</a>
+        <a href="#projects"         class="btn btn-outline">See Work →</a>
+      </div>
+    </div>
+
+    <!-- Hero right card -->
+    <div class="hero-right">
+      <div class="hero-card">
+
+        <div class="card-label">Quick Stats</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-num">5<span style="font-size:1.2rem;color:var(--muted2)">+</span></div>
+            <div class="stat-lbl">Projects</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">4</div>
+            <div class="stat-lbl">Certs</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" style="font-size:1.5rem">8.31</div>
+            <div class="stat-lbl">CGPA</div>
+          </div>
+        </div>
+
+        <div class="card-label">Core Stack</div>
+        <div class="chip-wrap">
+          <span class="chip">Java</span>
+          <span class="chip">Data Structures</span>
+          <span class="chip">Algorithms</span>
+          <span class="chip">SQL</span>
+          <span class="chip">Frontend</span>
+          <span class="chip">React.js</span>
+          <span class="chip">SDLC</span>
+          <span class="chip">Data Analysis</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Scroll to explore
+    </div>
+
+  </section>
+
+  <!-- ═══════════ ABOUT ═══════════ -->
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-label reveal hidden">Profile</div>
+
+      <div class="about-grid">
+        <div class="about-photo reveal hidden">
+          <div class="photo-box">
+            👩‍💻
+            <div class="photo-tag">
+              <div class="photo-tag-name">Divya Ammulu</div>
+              <div class="photo-tag-role">▶ Software Engineer · VIT · 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-right">
+          <div class="sec-title reveal hidden" style="margin-bottom:24px">
+            About <em>Me</em>
+          </div>
+          <p class="about-text-intro reveal hidden delay-1">
+            A <b>final-year Software Engineering</b> student who turns
+            complex problems into elegant, working solutions.
+          </p>
+          <p class="about-para reveal hidden delay-2">
+            Strong foundations in <b>data structures</b>, <b>OOP</b>, and
+            <b>system-level thinking</b> — paired with a genuine passion for
+            <b>data analysis</b> and <b>AI &amp; ML</b>. I've worked across
+            the full SDLC, from ideation to deployment.
+          </p>
+          <p class="about-para reveal hidden delay-2">
+            I enjoy working with real-world datasets, designing
+            <b>scalable ML pipelines</b>, and building backend systems
+            that are both robust and maintainable.
+          </p>
+          <div class="divider reveal hidden"></div>
+          <div class="traits-grid reveal hidden delay-3">
+            <div class="trait">🔍 Problem Solver</div>
+            <div class="trait">📊 Data-Driven Thinker</div>
+            <div class="trait">⚙️ Clean Code Focused</div>
+            <div class="trait">💡 Curious Learner</div>
+            <div class="trait">🧠 Systems Thinker</div>
+            <div class="trait">🚀 Self-Starter</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ EDUCATION ═══════════ -->
+  <section id="education">
+    <div class="wrap">
+      <div class="sec-label reveal hidden">Academic Background</div>
+      <div class="sec-title reveal hidden">Education <em>path</em></div>
+
+      <div class="timeline">
+        <div class="edu-item reveal hidden">
+          <div class="edu-year">2021 — 2026</div>
+          <div class="edu-degree">B.Tech – M.Tech (Integrated)<br>Software Engineering</div>
+          <div class="edu-school">VIT, Vellore · Tamil Nadu, India</div>
+          <div class="edu-score">⟡ CGPA 8.31 / 10</div>
+        </div>
+        <div class="edu-item reveal hidden delay-1">
+          <div class="edu-year">Class XII · 2021</div>
+          <div class="edu-degree">Higher Secondary — Science Stream</div>
+          <div class="edu-school">State Board / CBSE</div>
+          <div class="edu-score">⟡ 93%</div>
+        </div>
+        <div class="edu-item reveal hidden delay-2">
+          <div class="edu-year">Class X · 2019</div>
+          <div class="edu-degree">Secondary School — General Studies</div>
+          <div class="edu-school">State Board / CBSE</div>
+          <div class="edu-score">⟡ 100%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SKILLS ═══════════ -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="sec-label reveal hidden">Technical Expertise</div>
+      <div class="sec-title reveal hidden">Skills &amp; <em>Tools</em></div>
+
+      <div class="skills-bento">
+
+        <div class="sk skill-card reveal hidden">
+          <div class="skill-icon">⌨️</div>
+          <div class="skill-name">Languages</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Java</span>
+            <span class="skill-tag">C++</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">HTML/CSS</span>
+            <span class="skill-tag">React.js</span>
+          </div>
+        </div>
+
+        <div class="sk skill-card reveal hidden delay-1">
+          <div class="skill-icon">🤖</div>
+          <div class="skill-name">AI / ML &amp; Data</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Machine Learning</span>
+            <span class="skill-tag">Data Analysis</span>
+            <span class="skill-tag">Data Viz</span>
+            <span class="skill-tag">NLP Basics</span>
+            <span class="skill-tag">Computer Vision</span>
+          </div>
+        </div>
+
+        <div class="sk skill-card reveal hidden delay-2">
+          <div class="skill-icon">🧱</div>
+          <div class="skill-name">CS Foundations</div>
+          <div class="skill-tags">
+            <span class="skill-tag">DSA</span>
+            <span class="skill-tag">OOP</span>
+            <span class="skill-tag">DBMS</span>
+            <span class="skill-tag">OS</span>
+            <span class="skill-tag">Networking</span>
+          </div>
+        </div>
+
+        <div class="sk skill-card reveal hidden delay-3">
+          <div class="skill-icon">📐</div>
+          <div class="skill-name">Eng. Practices</div>
+          <div class="skill-tags">
+            <span class="skill-tag">SDLC</span>
+            <span class="skill-tag">Software Design</span>
+            <span class="skill-tag">Testing</span>
+            <span class="skill-tag">Security</span>
+            <span class="skill-tag">Cloud</span>
+          </div>
+        </div>
+
+        <div class="sk-wide skill-card reveal hidden">
+          <div class="skill-icon">🛠</div>
+          <div class="skill-name">Tools &amp; Platforms</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Git &amp; GitHub</span>
+            <span class="skill-tag">VS Code</span>
+            <span class="skill-tag">Jupyter Notebook</span>
+            <span class="skill-tag">Power BI</span>
+            <span class="skill-tag">Tableau</span>
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">Microsoft Office</span>
+            <span class="skill-tag">Azure AI</span>
+          </div>
+        </div>
+
+        <div class="sk-wide skill-card quote-card reveal hidden delay-1">
+          <div class="quote-text">"Consistency, <em>curiosity</em>, clean code."</div>
+          <div class="quote-by">— My engineering motto</div>
+        </div>
+
+        <div class="sk-full reveal hidden">
+          <div class="learn-banner">
+            <span class="learn-label">📡 Currently Learning</span>
+            <div class="learn-chips">
+              <span class="learn-chip">🧩 System Design</span>
+              <span class="learn-chip">🤖 Applied ML</span>
+              <span class="learn-chip">📊 Data Viz Projects</span>
+              <span class="learn-chip">☁️ Cloud &amp; DevOps</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PROJECTS ═══════════ -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="sec-label reveal hidden">What I've Built</div>
+      <div class="sec-title reveal hidden">Projects</div>
+
+      <div class="proj-bento">
+
+        <div class="pj-7 proj-card featured reveal hidden">
+          <div class="proj-glow" style="background:radial-gradient(circle,rgba(201,168,76,.3),transparent)"></div>
+          <div class="proj-num">01</div>
+          <div class="proj-badge badge-gold">★ Featured</div>
+          <h3 class="proj-title">Sign Language Detection using AI</h3>
+          <div class="proj-row"><span class="proj-key">Problem</span><span class="proj-val">Communication gap for hearing-impaired individuals.</span></div>
+          <div class="proj-row"><span class="proj-key">Solution</span><span class="proj-val">Real-time hand gesture recognition using ML and computer vision.</span></div>
+          <div class="proj-row"><span class="proj-key">Outcome</span><span class="proj-val">Accurate gesture-based communication for better accessibility.</span></div>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">Machine Learning</span>
+            <span class="proj-tag">Computer Vision</span>
+          </div>
+        </div>
+
+        <div class="pj-5 proj-card reveal hidden delay-1">
+          <div class="proj-glow" style="background:radial-gradient(circle,rgba(45,212,191,.2),transparent)"></div>
+          <div class="proj-num">02</div>
+          <div class="proj-badge badge-teal">AI / Health</div>
+          <h3 class="proj-title">Breast Cancer Prediction</h3>
+          <div class="proj-row"><span class="proj-key">Problem</span><span class="proj-val">Need for early, accurate cancer detection.</span></div>
+          <div class="proj-row"><span class="proj-key">Solution</span><span class="proj-val">ML classification model on medical dataset features.</span></div>
+          <div class="proj-row"><span class="proj-key">Outcome</span><span class="proj-val">Reliable predictions with reduced false negatives.</span></div>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">ML Algorithms</span>
+            <span class="proj-tag">Data Analysis</span>
+          </div>
+        </div>
+
+        <div class="pj-5 proj-card featured reveal hidden">
+          <div class="proj-glow" style="background:radial-gradient(circle,rgba(200,158,255,.2),transparent)"></div>
+          <div class="proj-num">03</div>
+          <div class="proj-badge badge-gold">★ Featured</div>
+          <h3 class="proj-title">Sentiment Analysis on Reviews</h3>
+          <div class="proj-row"><span class="proj-key">Problem</span><span class="proj-val">Scaling customer opinion mining from large datasets.</span></div>
+          <div class="proj-row"><span class="proj-key">Solution</span><span class="proj-val">NLP to classify product reviews by sentiment.</span></div>
+          <div class="proj-row"><span class="proj-key">Outcome</span><span class="proj-val">Actionable sentiment trends from customer feedback.</span></div>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">NLP</span>
+            <span class="proj-tag">Data Processing</span>
+          </div>
+        </div>
+
+        <div class="pj-7 proj-card reveal hidden delay-1">
+          <div class="proj-glow" style="background:radial-gradient(circle,rgba(232,75,75,.15),transparent)"></div>
+          <div class="proj-num">04</div>
+          <div class="proj-badge badge-dim">Web / Systems</div>
+          <h3 class="proj-title">Hostel Helpline Management System</h3>
+          <div class="proj-row"><span class="proj-key">Problem</span><span class="proj-val">Inefficient tracking and resolution of hostel complaints.</span></div>
+          <div class="proj-row"><span class="proj-key">Solution</span><span class="proj-val">Web-based complaint management system following full SDLC.</span></div>
+          <div class="proj-row"><span class="proj-key">Outcome</span><span class="proj-val">Improved resolution efficiency and faster response times.</span></div>
+          <div class="proj-tags">
+            <span class="proj-tag">HTML &amp; CSS</span>
+            <span class="proj-tag">Backend Logic</span>
+            <span class="proj-tag">SDLC</span>
+          </div>
+        </div>
+
+        <div class="pj-12 proj-card featured reveal hidden">
+          <div class="proj-glow" style="background:radial-gradient(circle,rgba(45,212,191,.2),transparent);width:300px;height:300px;top:-80px;right:-80px"></div>
+          <div class="proj-num" style="font-size:5rem">05</div>
+          <div class="proj-badge badge-gold">★ Featured</div>
+          <div class="proj-split">
+            <div>
+              <h3 class="proj-title" style="font-size:1.8rem">Smart Dustbin<br>using IoT</h3>
+              <div class="proj-row"><span class="proj-key">Problem</span><span class="proj-val">Manual waste monitoring causing inefficient garbage collection cycles.</span></div>
+              <div class="proj-row"><span class="proj-key">Solution</span><span class="proj-val">IoT-based dustbin using sensors and microcontrollers for real-time fill-level tracking.</span></div>
+            </div>
+            <div>
+              <div class="proj-row"><span class="proj-key">Outcome</span><span class="proj-val">Optimized waste collection routes through live monitoring data and cloud integration.</span></div>
+              <div class="proj-tags" style="margin-top:auto">
+                <span class="proj-tag">IoT</span>
+                <span class="proj-tag">Sensors</span>
+                <span class="proj-tag">Embedded Systems</span>
+                <span class="proj-tag">Cloud Integration</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ CERTIFICATIONS ═══════════ -->
+  <section id="certifications">
+    <div class="wrap">
+      <div class="sec-label reveal hidden">Credentials</div>
+      <div class="sec-title reveal hidden">Certifications</div>
+
+      <div class="cert-grid">
+        <a href="assets/certificates/azure-ai-certificate.pdf" target="_blank" class="cert-card reveal hidden">
+          <div class="cert-num">01</div>
+          <div>
+            <div class="cert-org">Microsoft</div>
+            <div class="cert-name">Azure AI Fundamentals (AI-900)</div>
+            <div class="cert-desc">AI workloads, ML concepts, and Azure AI services.</div>
+          </div>
+          <div class="cert-arrow">↗</div>
+        </a>
+        <a href="assets/certificates/infosys-certificate.pdf" target="_blank" class="cert-card reveal hidden delay-1">
+          <div class="cert-num">02</div>
+          <div>
+            <div class="cert-org">Infosys</div>
+            <div class="cert-name">Exploratory Data Analysis</div>
+            <div class="cert-desc">Data cleaning, visualization, and insight generation.</div>
+          </div>
+          <div class="cert-arrow">↗</div>
+        </a>
+        <a href="assets/certificates/deloitte-data-analytics.pdf" target="_blank" class="cert-card reveal hidden delay-2">
+          <div class="cert-num">03</div>
+          <div>
+            <div class="cert-org">Deloitte</div>
+            <div class="cert-name">Data Analytics Job Simulation</div>
+            <div class="cert-desc">Real-world business problems via data-driven techniques.</div>
+          </div>
+          <div class="cert-arrow">↗</div>
+        </a>
+        <a href="assets/certificates/java-certificate.pdf" target="_blank" class="cert-card reveal hidden delay-3">
+          <div class="cert-num">04</div>
+          <div>
+            <div class="cert-org">Java</div>
+            <div class="cert-name">Java Programming Certification</div>
+            <div class="cert-desc">OOP, exception handling, and logic building.</div>
+          </div>
+          <div class="cert-arrow">↗</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ CONTACT ═══════════ -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-label reveal hidden">Let's Connect</div>
+      <div class="contact-grid">
+        <div class="reveal hidden">
+          <h2 class="contact-heading">Got an<br><em>opportunity?</em><br>Let's talk.</h2>
+          <p class="contact-sub">
+            Actively seeking roles in software engineering, data analysis, and AI/ML.
+            Open to internships, full-time positions, and collaborations.
+          </p>
+        </div>
+        <div class="contact-links reveal hidden delay-1">
+          <a href="mailto:divya.r@example.com" class="contact-link">
+            <div class="link-icon">📧</div>
+            <div><div class="link-label">Email</div><div class="link-val">divya.r@example.com</div></div>
+          </a>
+          <a href="https://www.linkedin.com/in/r-divya-8a9a03357/" target="_blank" class="contact-link">
+            <div class="link-icon">💼</div>
+            <div><div class="link-label">LinkedIn</div><div class="link-val">r-divya-8a9a03357</div></div>
+          </a>
+          <a href="https://github.com/divyarvit" target="_blank" class="contact-link">
+            <div class="link-icon">💻</div>
+            <div><div class="link-label">GitHub</div><div class="link-val">divyarvit</div></div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer>
+    <div class="footer-logo">DIVYA<span>.</span>R</div>
+    <div class="footer-right">
+      <div>© 2026 Divya Ammulu</div>
+      <div>Built with <span>HTML · CSS · JavaScript</span></div>
+    </div>
+  </footer>
+
+  <!-- =============================================
+     JAVASCRIPT  — only 3 simple things:
+     1. Typing animation  (setTimeout)
+     2. Scroll reveal     (IntersectionObserver / classList)
+     3. Active nav link   (scroll + classList)
+  ============================================= -->
   <script>
-    const revealElements = document.querySelectorAll('.reveal');
+    // ─── 1. TYPING ANIMATION ───────────────────
+    // We have an array of words.
+    // We use setTimeout to add/remove letters one by one.
+    // getElementById finds the element, textContent changes its text.
 
-    const revealObserver = new IntersectionObserver(
-        (entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            }
-        });
-        },
-        { threshold: 0.15 }
-    );
+    var typedEl = document.getElementById('typed-text');
+    var words   = ['Software Engineer', 'AI & ML Developer', 'Data Analyst', 'Backend Developer'];
+    var wordIndex   = 0;   // which word we're on
+    var charIndex   = 0;   // how many characters typed so far
+    var isDeleting  = false;
 
-    revealElements.forEach(el => revealObserver.observe(el));
-  </script>
-  <script>
-    const roles = [
-        "Software Engineering Student | AI & ML | Data Analysis",
-        "Software Engineering Student | Backend & ML",
-        "Software Engineering Student | Data & Systems"
-    ];
+    function typeEffect() {
+      var currentWord = words[wordIndex];
 
-    let index = 0;
-    const heroText = document.getElementById("hero-text");
+      if (!isDeleting) {
+        // Add one character
+        charIndex = charIndex + 1;
+        typedEl.textContent = currentWord.substring(0, charIndex);
 
-    setInterval(() => {
-        heroText.style.opacity = 0;
-
-        setTimeout(() => {
-        index = (index + 1) % roles.length;
-        heroText.textContent = roles[index];
-        heroText.style.opacity = 1;
-        }, 400);
-    }, 2600);
-  </script>
-  <script>
-    document.querySelectorAll(".skill-card").forEach(card => {
-        card.addEventListener("mousemove", e => {
-        const rect = card.getBoundingClientRect();
-        card.style.setProperty("--x", `${e.clientX - rect.left}px`);
-        card.style.setProperty("--y", `${e.clientY - rect.top}px`);
-        });
-    });
-  </script>
-  <script>
-    document.querySelectorAll(".project-card").forEach(card => {
-        card.addEventListener("mousemove", e => {
-        const rect = card.getBoundingClientRect();
-        card.style.setProperty("--x", `${e.clientX - rect.left}px`);
-        card.style.setProperty("--y", `${e.clientY - rect.top}px`);
-        });
-    });
-  </script>
-  <script>
-    const sections = document.querySelectorAll("section[id]");
-    const navLinks = document.querySelectorAll(".nav-link");
-
-    window.addEventListener("scroll", () => {
-        let current = "";
-
-        sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        if (scrollY >= sectionTop) {
-            current = section.getAttribute("id");
+        if (charIndex === currentWord.length) {
+          // Word fully typed — wait then start deleting
+          isDeleting = true;
+          setTimeout(typeEffect, 2000);
+          return;
         }
-        });
+      } else {
+        // Remove one character
+        charIndex = charIndex - 1;
+        typedEl.textContent = currentWord.substring(0, charIndex);
 
-        navLinks.forEach(link => {
-        link.classList.remove("active");
-        if (link.getAttribute("href") === `#${current}`) {
-            link.classList.add("active");
+        if (charIndex === 0) {
+          // Word fully deleted — move to next word
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          setTimeout(typeEffect, 500);
+          return;
         }
-        });
+      }
+
+      // Speed: slower typing (100ms), faster deleting (60ms)
+      var speed = isDeleting ? 60 : 100;
+      setTimeout(typeEffect, speed);
+    }
+
+    // Start typing after 1 second
+    setTimeout(typeEffect, 1000);
+
+
+    // ─── 2. SCROLL REVEAL ──────────────────────
+    // IntersectionObserver watches elements.
+    // When an element enters the screen, we add class 'visible'.
+    // CSS then animates it (opacity + translateY).
+
+    var revealElements = document.querySelectorAll('.reveal.hidden');
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(function(el) {
+      observer.observe(el);
+    });
+
+
+    // ─── 3. ACTIVE NAV LINK ────────────────────
+    // On scroll, find which section is in view.
+    // Add 'active' class to matching nav link (changes its color via CSS).
+
+    var sections  = document.querySelectorAll('section[id]');
+    var navLinks  = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', function() {
+      var scrollPos = window.scrollY;
+      var current   = '';
+
+      sections.forEach(function(sec) {
+        if (scrollPos >= sec.offsetTop - 130) {
+          current = sec.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(function(link) {
+        link.style.color = '';  // reset
+        if (link.getAttribute('href') === '#' + current) {
+          link.style.color = 'var(--gold)';
+        }
+      });
+    });
+
+
+    // ─── 4. SMOOTH SCROLL ──────────────────────
+    // When a nav link is clicked, smoothly scroll to that section.
+    // preventDefault stops the default jump behaviour.
+
+    document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
     });
   </script>
 
+</body>
 </html>
